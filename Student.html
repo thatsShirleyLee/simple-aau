@@ -1,0 +1,1663 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>AAU_Student</title>
+    <meta content="width=device-width,initial-scale=1" name="viewport">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui" name="viewport">
+    <style type="text/css">
+
+    </style>
+</head>
+<body>
+<div id="app">
+    <v-app>
+        <template>
+            <v-card>
+                <v-toolbar
+                        color="primary"
+                        dark
+                        flat
+                >
+                    <v-toolbar-title>Student</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                    <div>
+                        <v-menu
+                                offset-y
+                        >
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-btn
+                                        icon
+                                        v-bind="attrs"
+                                        v-on="on"
+                                >
+                                    <v-icon>mdi-bell-ring-outline</v-icon>
+                                </v-btn>
+                            </template>
+
+                            <v-list
+                                    style="border-radius: 6px"
+                                    width="140"
+                            >
+                                <v-list-item
+                                        @click="() => {}"
+                                        style="min-height: 35px"
+                                >
+                                    <v-list-item-title style="font-size: 0.5em;">
+                                        <v-icon left>
+                                            mdi-bell-plus-outline
+                                        </v-icon>
+                                        查看消息
+                                    </v-list-item-title>
+                                </v-list-item>
+                                <v-list-item
+                                        @click="() => {}"
+                                        style="min-height: 35px"
+                                >
+                                    <v-list-item-title style="font-size: 0.5em;">
+                                        <v-icon left>
+                                            mdi-bell-check-outline
+                                        </v-icon>
+                                        标记已读
+                                    </v-list-item-title>
+                                </v-list-item>
+                            </v-list>
+                        </v-menu>
+                        <v-menu
+                                offset-y
+                        >
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-btn
+                                        icon
+                                        v-bind="attrs"
+                                        v-on="on"
+                                >
+                                    <!--								<v-icon>mdi-account-check-outline</v-icon>-->
+                                    <v-avatar>
+                                        <img
+                                                alt="Avatar"
+                                                src="images/avatar/student.jpg"
+                                                style="height: 30px; width: 30px;"
+                                        >
+                                    </v-avatar>
+                                </v-btn>
+                            </template>
+
+                            <v-list
+                                    style="border-radius: 6px"
+                                    width="140"
+                            >
+                                <v-list-item
+                                        @click="() => {}"
+                                        style="min-height: 35px"
+                                >
+                                    <v-list-item-title style="font-size: 0.5em;">
+                                        <v-icon left>
+                                            mdi-account-edit-outline
+                                        </v-icon>
+                                        修改信息
+                                    </v-list-item-title>
+                                </v-list-item>
+                                <v-list-item
+                                        @click="logout"
+                                        style="min-height: 35px"
+                                >
+                                    <v-list-item-title style="font-size: 0.5em;">
+                                        <v-icon left>
+                                            mdi-logout
+                                        </v-icon>
+                                        退出
+                                    </v-list-item-title>
+                                </v-list-item>
+                            </v-list>
+                        </v-menu>
+                        <v-menu
+                                offset-y
+                        >
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-btn
+                                        icon
+                                        v-bind="attrs"
+                                        v-on="on"
+                                >
+                                    <v-icon>mdi-dots-vertical</v-icon>
+                                </v-btn>
+                            </template>
+
+                            <v-list
+                                    style="border-radius: 6px"
+                                    width="140"
+                            >
+                                <v-list-item
+                                        :key="n"
+                                        @click="() => {}"
+                                        style="min-height: 35px"
+                                        v-for="n in 5"
+                                >
+                                    <v-list-item-title style="text-align: center; font-size: 0.5em;">Option {{ n }}
+                                    </v-list-item-title>
+                                </v-list-item>
+                            </v-list>
+                        </v-menu>
+                    </div>
+                </v-toolbar>
+                <v-tabs
+                        active-class="white primary--text"
+                        background-color="primary"
+                        dark
+                        flat
+                        grow
+                        vertical
+                >
+                    <!--                        class="mt-7"-->
+                    <!--                    grow 强制 v-tab 占用所有可用空间-->
+                    <v-tab class="text-body-1">个人信息</v-tab>
+                    <v-tab class="text-body-1">上传材料</v-tab>
+                    <v-tab class="text-body-1">浏览</v-tab>
+                    <v-tab class="text-body-1">留言</v-tab>
+                    <v-tab class="text-body-1">系统维护</v-tab>
+                    <v-tab class="text-body-1">其他</v-tab>
+                    <v-tab-item>
+                        <div>
+                            <v-container fluid>
+                                <v-row justify="center">
+                                    <v-expansion-panels popout>
+                                        <v-expansion-panel
+                                                hide-actions
+                                                v-for="message in messages.slice(0, 1)"
+                                        >
+                                            <v-expansion-panel-header>
+                                                <v-row
+                                                        align="center"
+                                                        class="spacer"
+                                                        no-gutters
+                                                >
+                                                    <v-col
+                                                            cols="4"
+                                                            md="1"
+                                                            sm="2"
+                                                    >
+                                                        <v-avatar
+                                                                size="36px"
+                                                        >
+                                                            <img
+                                                                    alt="Avatar"
+                                                                    src="images/avatar/student.jpg"
+                                                                    v-if="message.avatar"
+                                                            >
+                                                            <v-icon
+                                                                    :color="message.color"
+                                                                    v-else
+                                                                    v-text="message.icon"
+                                                            ></v-icon>
+                                                        </v-avatar>
+                                                    </v-col>
+
+                                                    <v-col
+                                                            class="hidden-xs-only"
+                                                            md="3"
+                                                            sm="5"
+                                                    >
+                                                        <strong v-html="message.name"></strong>
+                                                        <span
+                                                                class="grey--text"
+                                                                v-if="message.total"
+                                                        >
+                                                        &nbsp;({{ message.total }})
+                                                    </span>
+                                                    </v-col>
+
+                                                    <v-col
+                                                            class="text-no-wrap"
+                                                            cols="5"
+                                                            sm="3"
+                                                    >
+                                                        <v-chip
+                                                                :color="`${message.color} lighten-4`"
+                                                                class="ml-0 mr-2 black--text"
+                                                                label
+                                                                small
+                                                                v-if="message.new"
+                                                        >
+                                                            {{ message.new }} new
+                                                        </v-chip>
+                                                        <strong v-html="message.title"></strong>
+                                                    </v-col>
+
+                                                    <v-col
+                                                            class="grey--text text-truncate hidden-sm-and-down"
+                                                            v-if="message.excerpt"
+                                                    >
+                                                        &mdash;
+                                                        {{ message.excerpt }}
+                                                    </v-col>
+                                                </v-row>
+                                            </v-expansion-panel-header>
+                                            <v-expansion-panel-content>
+                                                <v-divider></v-divider>
+                                                <div>
+                                                    <v-form>
+                                                        <v-row>
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="3"
+                                                            >
+                                                                <v-text-field
+                                                                        :rules="[value => !!value || '学号空！',value => (value && /^[0-9]{8}$/.test(value)) || '学号为8位',]"
+                                                                        hide-details="auto"
+                                                                        label="学号"
+                                                                        loader-height="1"
+                                                                        outlined
+                                                                        persistent-hint
+                                                                        value="18111136"
+                                                                        clearable
+                                                                ></v-text-field>
+                                                            </v-col>
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="3"
+                                                            >
+                                                                <v-text-field
+                                                                        :rules="[value => !!value || '姓名空！']"
+                                                                        dense
+                                                                        filled
+                                                                        hide-details="auto"
+                                                                        label="姓名"
+                                                                        loader-height="1"
+                                                                        value="李胜男"
+                                                                        clearable
+                                                                ></v-text-field>
+                                                            </v-col>
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="3"
+                                                            >
+                                                                <v-select
+                                                                        :items="sexuality"
+                                                                        hide-details="auto"
+                                                                        label="性别"
+                                                                        loader-height="1"
+                                                                        outlined
+                                                                        persistent-hint
+                                                                        value="女"
+                                                                ></v-select>
+                                                            </v-col>
+                                                            <!--                                                        这里是出生日期-->
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="3"
+                                                            >
+                                                                <v-menu
+                                                                        :close-on-content-click="false"
+                                                                        min-width="290px"
+                                                                        offset-y
+                                                                        ref="menu"
+                                                                        transition="scale-transition"
+                                                                        v-model="menu"
+                                                                >
+                                                                    <template v-slot:activator="{ on, attrs }">
+                                                                        <v-text-field
+                                                                                dense
+                                                                                filled
+                                                                                hide-details="auto"
+                                                                                label="出生日期"
+                                                                                loader-height="1"
+                                                                                v-bind="attrs"
+                                                                                v-model="date"
+                                                                                v-on="on"
+                                                                                clearable
+                                                                                value="2000-01-12"
+                                                                        ></v-text-field>
+                                                                    </template>
+                                                                    <v-date-picker
+                                                                            :max="new Date().toISOString().substr(0, 10)"
+                                                                            @change="save"
+                                                                            min="1950-01-01"
+                                                                            ref="picker"
+                                                                            v-model="date"
+                                                                    ></v-date-picker>
+                                                                </v-menu>
+                                                            </v-col>
+                                                        </v-row>
+                                                        <v-row>
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="3"
+                                                            >
+                                                                <v-select
+                                                                        :items="grade"
+                                                                        dense
+                                                                        filled
+                                                                        hide-details="auto"
+                                                                        label="年级"
+                                                                        loader-height="1"
+                                                                        value="2018"
+                                                                ></v-select>
+                                                            </v-col>
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="3"
+                                                            >
+                                                                <v-text-field
+                                                                        :rules="[value => !!value || '学制空！',value => (value && /^[1-4]{1}$/.test(value)) || '只能为1位数字',]"
+                                                                        hide-details="auto"
+                                                                        label="学制(年)"
+                                                                        loader-height="1"
+                                                                        outlined
+                                                                        persistent-hint
+                                                                        clearable
+                                                                        value="4"
+                                                                ></v-text-field>
+                                                            </v-col>
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="3"
+                                                            >
+                                                                <v-text-field
+                                                                        :rules="[value => !!value || '学院空！']"
+                                                                        dense
+                                                                        filled
+                                                                        hide-details="auto"
+                                                                        label="学院"
+                                                                        loader-height="1"
+                                                                        clearable
+                                                                        value="信息与计算机学院"
+                                                                ></v-text-field>
+                                                            </v-col>
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="3"
+                                                            >
+                                                                <v-select
+                                                                        :items="politics"
+                                                                        hide-details="auto"
+                                                                        label="政治面貌"
+                                                                        loader-height="1"
+                                                                        outlined
+                                                                        persistent-hint
+                                                                        value="中国共产党预备党员"
+                                                                ></v-select>
+                                                            </v-col>
+                                                        </v-row>
+                                                        <v-row>
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="3"
+                                                            >
+                                                                <v-text-field
+                                                                        :rules="[value => !!value || '专业空！']"
+                                                                        hide-details="auto"
+                                                                        label="专业"
+                                                                        loader-height="1"
+                                                                        outlined
+                                                                        persistent-hint
+                                                                        clearable
+                                                                        value="计算机科学与技术"
+                                                                ></v-text-field>
+                                                            </v-col>
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="3"
+                                                            >
+                                                                <v-select
+                                                                        :items="nation"
+                                                                        dense
+                                                                        filled
+                                                                        hide-details="auto"
+                                                                        label="民族"
+                                                                        loader-height="1"
+                                                                        value="汉族"
+                                                                ></v-select>
+                                                            </v-col>
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="3"
+                                                            >
+                                                                <v-text-field
+                                                                        :rules="[value => !!value || '班级空！']"
+                                                                        hide-details="auto"
+                                                                        hint="eg: 18计算机科学与技术-3班"
+                                                                        label="班级"
+                                                                        loader-height="1"
+                                                                        outlined
+                                                                        clearable
+                                                                        value="18计算机科学与技术-3班"
+                                                                ></v-text-field>
+                                                            </v-col>
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="3"
+                                                            >
+                                                                <v-text-field
+                                                                        :items="nation"
+                                                                        dense
+                                                                        filled
+                                                                        hide-details="auto"
+                                                                        label="学籍"
+                                                                        loader-height="1"
+                                                                        readonly
+                                                                        v-model="schoolroll"
+                                                                        clearable
+                                                                        value="皖****"
+                                                                ></v-text-field>
+                                                            </v-col>
+                                                        </v-row>
+                                                        <v-row>
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="3"
+                                                            >
+                                                                <v-text-field
+                                                                        :rules="[value => !!value || '入学时间空！']"
+                                                                        dense
+                                                                        filled
+                                                                        hide-details="auto"
+                                                                        label="入学时间"
+                                                                        loader-height="1"
+                                                                        clearable
+                                                                        value="2018-09-01"
+                                                                ></v-text-field>
+                                                            </v-col>
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="3"
+                                                            >
+                                                                <v-text-field
+                                                                        :rules="[value => !!value || '身份证号空！',value => (value && /^[1-9]{18}$/.test(value)) || '只能为18位数字',]"
+                                                                        hide-details="auto"
+                                                                        label="身份证号"
+                                                                        loader-height="1"
+                                                                        outlined
+                                                                        persistent-hint
+                                                                        clearable
+                                                                        value="342225************"
+                                                                ></v-text-field>
+                                                            </v-col>
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="3"
+                                                            >
+                                                                <!--                                                                这里地址选择待完善-->
+                                                                <v-select
+                                                                        :items="location"
+                                                                        dense
+                                                                        filled
+                                                                        hide-details="auto"
+                                                                        label="户口所在地"
+                                                                        loader-height="1"
+                                                                        value="安徽"
+                                                                >
+                                                                </v-select>
+                                                            </v-col>
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="3"
+                                                            >
+                                                                <v-select
+                                                                        :items="maritalstatus"
+                                                                        hide-details="auto"
+                                                                        label="是否婚否"
+                                                                        loader-height="1"
+                                                                        outlined
+                                                                        persistent-hint
+                                                                        value="否"
+                                                                ></v-select>
+                                                            </v-col>
+                                                        </v-row>
+                                                    </v-form>
+                                                </div>
+                                            </v-expansion-panel-content>
+                                        </v-expansion-panel>
+                                        <v-expansion-panel
+                                                hide-actions
+                                                v-for="message in messages.slice(1, 2)"
+                                        >
+                                            <v-expansion-panel-header>
+                                                <v-row
+                                                        align="center"
+                                                        class="spacer"
+                                                        no-gutters
+                                                >
+                                                    <v-col
+                                                            cols="4"
+                                                            md="1"
+                                                            sm="2"
+                                                    >
+                                                        <v-avatar
+                                                                size="36px"
+                                                        >
+                                                            <img
+                                                                    alt="Avatar"
+                                                                    src="images/avatar/student.jpg"
+                                                                    v-if="message.avatar"
+                                                            >
+                                                            <v-icon
+                                                                    :color="message.color"
+                                                                    v-else
+                                                                    v-text="message.icon"
+                                                            ></v-icon>
+                                                        </v-avatar>
+                                                    </v-col>
+
+                                                    <v-col
+                                                            class="hidden-xs-only"
+                                                            md="3"
+                                                            sm="5"
+                                                    >
+                                                        <strong v-html="message.name"></strong>
+                                                        <span
+                                                                class="grey--text"
+                                                                v-if="message.total"
+                                                        >
+                                                        &nbsp;({{ message.total }})
+                                                    </span>
+                                                    </v-col>
+
+                                                    <v-col
+                                                            class="text-no-wrap"
+                                                            cols="5"
+                                                            sm="3"
+                                                    >
+                                                        <v-chip
+                                                                :color="`${message.color} lighten-4`"
+                                                                class="ml-0 mr-2 black--text"
+                                                                label
+                                                                small
+                                                                v-if="message.new"
+                                                        >
+                                                            {{ message.new }} new
+                                                        </v-chip>
+                                                        <strong v-html="message.title"></strong>
+                                                    </v-col>
+
+                                                    <v-col
+                                                            class="grey--text text-truncate hidden-sm-and-down"
+                                                            v-if="message.excerpt"
+                                                    >
+                                                        &mdash;
+                                                        {{ message.excerpt }}
+                                                    </v-col>
+                                                </v-row>
+                                            </v-expansion-panel-header>
+                                            <v-expansion-panel-content>
+                                                <v-divider></v-divider>
+                                                <div>
+                                                    <v-form>
+                                                        <v-row>
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="6"
+                                                            >
+                                                                <v-text-field
+                                                                        :rules="[value => !!value || '电话空！',value => (value && /^[0-9]{11}$/.test(value)) || '电话为11位',]"
+                                                                        hide-details="auto"
+                                                                        label="联系电话"
+                                                                        loader-height="1"
+                                                                        outlined
+                                                                        persistent-hint
+                                                                        clearable
+                                                                ></v-text-field>
+                                                            </v-col>
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="6"
+                                                            >
+                                                                <v-text-field
+                                                                        :rules=emailRules
+                                                                        dense
+                                                                        filled
+                                                                        hide-details="auto"
+                                                                        label="邮箱"
+                                                                        loader-height="1"
+                                                                        clearable
+                                                                ></v-text-field>
+                                                            </v-col>
+                                                        </v-row>
+                                                        <v-row>
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="6"
+                                                            >
+                                                                <v-text-field
+                                                                        :rules="[value => !!value || 'QQ号码空！']"
+                                                                        dense
+                                                                        filled
+                                                                        hide-details="auto"
+                                                                        label="QQ号码"
+                                                                        loader-height="1"
+                                                                        persistent-hint
+                                                                        clearable
+                                                                ></v-text-field>
+                                                            </v-col>
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="6"
+                                                            >
+                                                                <v-text-field
+                                                                        :rules="[value => !!value || '电话空！',value => (value && /^[0-9]{11}$/.test(value)) || '电话为11位',]"
+                                                                        hide-details="auto"
+                                                                        label="家庭电话"
+                                                                        loader-height="1"
+                                                                        outlined
+                                                                        persistent-hint
+                                                                        clearable
+                                                                ></v-text-field>
+                                                            </v-col>
+                                                        </v-row>
+                                                        <v-row>
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="6"
+                                                            >
+                                                                <v-text-field
+                                                                        :rules="[value => !!value || '邮编空！',value => (value && /^[0-9]{6}$/.test(value)) || 'y邮编为6位',]"
+                                                                        hide-details="auto"
+                                                                        label="家庭邮编"
+                                                                        loader-height="1"
+                                                                        outlined
+                                                                        persistent-hint
+                                                                        clearable
+                                                                ></v-text-field>
+                                                            </v-col>
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="6"
+                                                            >
+                                                                <v-select
+                                                                        :items="location"
+                                                                        dense
+                                                                        filled
+                                                                        hide-details="auto"
+                                                                        label="家庭住址"
+                                                                        loader-height="1"
+                                                                ></v-select>
+                                                            </v-col>
+                                                        </v-row>
+                                                    </v-form>
+                                                </div>
+                                            </v-expansion-panel-content>
+                                        </v-expansion-panel>
+                                        <v-expansion-panel
+                                                hide-actions
+                                                v-for="message in messages.slice(2, 3)"
+                                        >
+                                            <v-expansion-panel-header>
+                                                <v-row
+                                                        align="center"
+                                                        class="spacer"
+                                                        no-gutters
+                                                >
+                                                    <v-col
+                                                            cols="4"
+                                                            md="1"
+                                                            sm="2"
+                                                    >
+                                                        <v-avatar
+                                                                size="36px"
+                                                        >
+                                                            <img
+                                                                    alt="Avatar"
+                                                                    src="images/avatar/student.jpg"
+                                                                    v-if="message.avatar"
+                                                            >
+                                                            <v-icon
+                                                                    :color="message.color"
+                                                                    v-else
+                                                                    v-text="message.icon"
+                                                            ></v-icon>
+                                                        </v-avatar>
+                                                    </v-col>
+
+                                                    <v-col
+                                                            class="hidden-xs-only"
+                                                            md="3"
+                                                            sm="5"
+                                                    >
+                                                        <strong v-html="message.name"></strong>
+                                                        <span
+                                                                class="grey--text"
+                                                                v-if="message.total"
+                                                        >
+                                                        &nbsp;({{ message.total }})
+                                                    </span>
+                                                    </v-col>
+
+                                                    <v-col
+                                                            class="text-no-wrap"
+                                                            cols="5"
+                                                            sm="3"
+                                                    >
+                                                        <v-chip
+                                                                :color="`${message.color} lighten-4`"
+                                                                class="ml-0 mr-2 black--text"
+                                                                label
+                                                                small
+                                                                v-if="message.new"
+                                                        >
+                                                            {{ message.new }} new
+                                                        </v-chip>
+                                                        <strong v-html="message.title"></strong>
+                                                    </v-col>
+
+                                                    <v-col
+                                                            class="grey--text text-truncate hidden-sm-and-down"
+                                                            v-if="message.excerpt"
+                                                    >
+                                                        &mdash;
+                                                        {{ message.excerpt }}
+                                                    </v-col>
+                                                </v-row>
+                                            </v-expansion-panel-header>
+                                            <v-expansion-panel-content>
+                                                <v-divider></v-divider>
+                                                <v-simple-table>
+                                                    <template v-slot:default>
+                                                        <thead>
+                                                        <tr>
+                                                            <th>
+                                                                姓名
+                                                            </th>
+                                                            <th>
+                                                                年龄
+                                                            </th>
+                                                            <th>
+                                                                关系
+                                                            </th>
+                                                            <th>
+                                                                工作或学习单位
+                                                            </th>
+                                                            <th>
+                                                                联系电话
+                                                            </th>
+                                                            <th>
+                                                                职业
+                                                            </th>
+                                                            <th>
+                                                                年收入
+                                                            </th>
+                                                            <th>
+                                                                健康状况
+                                                            </th>
+                                                            <th>
+                                                                政治面貌
+                                                            </th>
+                                                            <th>
+                                                                性别
+                                                            </th>
+                                                            <th>
+                                                                操作
+                                                            </th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <tr>
+                                                            <td>John</td>
+                                                            <td>38</td>
+                                                            <td>Dad</td>
+                                                            <td>America</td>
+                                                            <td>*</td>
+                                                            <td>*</td>
+                                                            <td>*</td>
+                                                            <td>*</td>
+                                                            <td>
+                                                                <v-select
+                                                                        :items="politics"
+                                                                        style="width: 100px"
+                                                                ></v-select>
+                                                            </td>
+                                                            <td>
+                                                                <v-select
+                                                                        :items="sexuality"
+                                                                        style="width: 30px"
+                                                                >
+                                                                </v-select>
+                                                            </td>
+                                                            <td>
+                                                                <v-btn
+                                                                        color="primary"
+                                                                        depressed
+                                                                >
+                                                                    删除
+                                                                </v-btn>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Mary</td>
+                                                            <td>34</td>
+                                                            <td>Mom</td>
+                                                            <td>America</td>
+                                                            <td>*</td>
+                                                            <td>*</td>
+                                                            <td>*</td>
+                                                            <td>*</td>
+                                                            <td>
+                                                                <v-select
+                                                                        :items="politics"
+                                                                        style="width: 100px"
+                                                                ></v-select>
+                                                            </td>
+                                                            <td>
+                                                                <v-select
+                                                                        :items="sexuality"
+                                                                        style="width: 30px"
+                                                                >
+                                                                </v-select>
+                                                            </td>
+                                                            <td>
+                                                                <v-btn
+                                                                        color="primary"
+                                                                        depressed
+                                                                >
+                                                                    删除
+                                                                </v-btn>
+                                                            </td>
+                                                        </tr>
+                                                        <v-btn
+                                                                color="primary"
+                                                                depressed
+                                                        >
+                                                            增加一行
+                                                        </v-btn>
+                                                        </tbody>
+                                                    </template>
+                                                </v-simple-table>
+                                            </v-expansion-panel-content>
+                                        </v-expansion-panel>
+                                        <v-expansion-panel
+                                                hide-actions
+                                                v-for="message in messages.slice(3, 4)"
+                                        >
+                                            <v-expansion-panel-header>
+                                                <v-row
+                                                        align="center"
+                                                        class="spacer"
+                                                        no-gutters
+                                                >
+                                                    <v-col
+                                                            cols="4"
+                                                            md="1"
+                                                            sm="2"
+                                                    >
+                                                        <v-avatar
+                                                                size="36px"
+                                                        >
+                                                            <img
+                                                                    alt="Avatar"
+                                                                    src="images/avatar/student.jpg"
+                                                                    v-if="message.avatar"
+                                                            >
+                                                            <v-icon
+                                                                    :color="message.color"
+                                                                    v-else
+                                                                    v-text="message.icon"
+                                                            ></v-icon>
+                                                        </v-avatar>
+                                                    </v-col>
+
+                                                    <v-col
+                                                            class="hidden-xs-only"
+                                                            md="3"
+                                                            sm="5"
+                                                    >
+                                                        <strong v-html="message.name"></strong>
+                                                        <span
+                                                                class="grey--text"
+                                                                v-if="message.total"
+                                                        >
+                                                        &nbsp;({{ message.total }})
+                                                    </span>
+                                                    </v-col>
+
+                                                    <v-col
+                                                            class="text-no-wrap"
+                                                            cols="5"
+                                                            sm="3"
+                                                    >
+                                                        <v-chip
+                                                                :color="`${message.color} lighten-4`"
+                                                                class="ml-0 mr-2 black--text"
+                                                                label
+                                                                small
+                                                                v-if="message.new"
+                                                        >
+                                                            {{ message.new }} new
+                                                        </v-chip>
+                                                        <strong v-html="message.title"></strong>
+                                                    </v-col>
+
+                                                    <v-col
+                                                            class="grey--text text-truncate hidden-sm-and-down"
+                                                            v-if="message.excerpt"
+                                                    >
+                                                        &mdash;
+                                                        {{ message.excerpt }}
+                                                    </v-col>
+                                                </v-row>
+                                            </v-expansion-panel-header>
+                                            <v-expansion-panel-content>
+                                                <v-divider></v-divider>
+                                                <v-simple-table>
+                                                    <template v-slot:default>
+                                                        <thead>
+                                                        <tr>
+                                                            <th>
+                                                                自何年何月
+                                                            </th>
+                                                            <th>
+                                                                至何年何月
+                                                            </th>
+                                                            <th>
+                                                                在何地学习或工作
+                                                            </th>
+                                                            <th>
+                                                                职务
+                                                            </th>
+                                                            <th>
+                                                                证明人
+                                                            </th>
+                                                            <th>
+                                                                操作
+                                                            </th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <tr>
+                                                            <td>2006.09</td>
+                                                            <td>2012.07</td>
+                                                            <td>翻斗小学</td>
+                                                            <td>学生</td>
+                                                            <td>***</td>
+                                                            <td>
+                                                                <v-btn
+                                                                        color="primary"
+                                                                        depressed
+                                                                >
+                                                                    删除
+                                                                </v-btn>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>2012.09</td>
+                                                            <td>2015.07</td>
+                                                            <td>**初中</td>
+                                                            <td>学生</td>
+                                                            <td>***</td>
+                                                            <td>
+                                                                <v-btn
+                                                                        color="primary"
+                                                                        depressed
+                                                                >
+                                                                    删除
+                                                                </v-btn>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>2015.09</td>
+                                                            <td>2018.07</td>
+                                                            <td>**高中</td>
+                                                            <td>学生</td>
+                                                            <td>***</td>
+                                                            <td>
+                                                                <v-btn
+                                                                        color="primary"
+                                                                        depressed
+                                                                >
+                                                                    删除
+                                                                </v-btn>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>2018.09</td>
+                                                            <td>2022.06</td>
+                                                            <td>安徽农业大学</td>
+                                                            <td>学生</td>
+                                                            <td>乐*</td>
+                                                            <td>
+                                                                <v-btn
+                                                                        color="primary"
+                                                                        depressed
+                                                                >
+                                                                    删除
+                                                                </v-btn>
+                                                            </td>
+                                                        </tr>
+                                                        <v-btn
+                                                                color="primary"
+                                                                depressed
+                                                        >
+                                                            增加一行
+                                                        </v-btn>
+                                                        </tbody>
+                                                    </template>
+                                                </v-simple-table>
+                                            </v-expansion-panel-content>
+                                        </v-expansion-panel>
+                                        <v-expansion-panel
+                                                hide-actions
+                                                v-for="message in messages.slice(4, 5)"
+                                        >
+                                            <v-expansion-panel-header>
+                                                <v-row
+                                                        align="center"
+                                                        class="spacer"
+                                                        no-gutters
+                                                >
+                                                    <v-col
+                                                            cols="4"
+                                                            md="1"
+                                                            sm="2"
+                                                    >
+                                                        <v-avatar
+                                                                size="36px"
+                                                        >
+                                                            <img
+                                                                    alt="Avatar"
+                                                                    src="images/avatar/student.jpg"
+                                                                    v-if="message.avatar"
+                                                            >
+                                                            <v-icon
+                                                                    :color="message.color"
+                                                                    v-else
+                                                                    v-text="message.icon"
+                                                            ></v-icon>
+                                                        </v-avatar>
+                                                    </v-col>
+
+                                                    <v-col
+                                                            class="hidden-xs-only"
+                                                            md="3"
+                                                            sm="5"
+                                                    >
+                                                        <strong v-html="message.name"></strong>
+                                                        <span
+                                                                class="grey--text"
+                                                                v-if="message.total"
+                                                        >
+                                                        &nbsp;({{ message.total }})
+                                                    </span>
+                                                    </v-col>
+
+                                                    <v-col
+                                                            class="text-no-wrap"
+                                                            cols="5"
+                                                            sm="3"
+                                                    >
+                                                        <v-chip
+                                                                :color="`${message.color} lighten-4`"
+                                                                class="ml-0 mr-2 black--text"
+                                                                label
+                                                                small
+                                                                v-if="message.new"
+                                                        >
+                                                            {{ message.new }} new
+                                                        </v-chip>
+                                                        <strong v-html="message.title"></strong>
+                                                    </v-col>
+
+                                                    <v-col
+                                                            class="grey--text text-truncate hidden-sm-and-down"
+                                                            v-if="message.excerpt"
+                                                    >
+                                                        &mdash;
+                                                        {{ message.excerpt }}
+                                                    </v-col>
+                                                </v-row>
+                                            </v-expansion-panel-header>
+                                            <v-expansion-panel-content>
+                                                <v-divider></v-divider>
+                                                <div>
+                                                    <v-form>
+                                                        <v-row>
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="3"
+                                                            >
+                                                                <v-text-field
+                                                                        hide-details="auto"
+                                                                        label="银行名称"
+                                                                        loader-height="1"
+                                                                        outlined
+                                                                        persistent-hint
+                                                                        clearable
+                                                                ></v-text-field>
+                                                            </v-col>
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="3"
+                                                            >
+                                                                <v-text-field
+                                                                        dense
+                                                                        filled
+                                                                        hide-details="auto"
+                                                                        label="银行卡号"
+                                                                        loader-height="1"
+                                                                        clearable
+                                                                ></v-text-field>
+                                                            </v-col>
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="3"
+                                                            >
+                                                                <v-text-field
+                                                                        hide-details="auto"
+                                                                        label="姓名拼音"
+                                                                        loader-height="1"
+                                                                        outlined
+                                                                        persistent-hint
+                                                                        clearable
+                                                                ></v-text-field>
+                                                            </v-col>
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="3"
+                                                            >
+                                                                <v-text-field
+                                                                        dense
+                                                                        filled
+                                                                        hide-details="auto"
+                                                                        label="曾用名"
+                                                                        loader-height="1"
+                                                                        clearable
+                                                                ></v-text-field>
+                                                            </v-col>
+                                                        </v-row>
+                                                        <v-row>
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="3"
+                                                            >
+                                                                <v-text-field
+                                                                        dense
+                                                                        filled
+                                                                        hide-details="auto"
+                                                                        label="身高(cm)"
+                                                                        loader-height="1"
+                                                                        clearable
+                                                                ></v-text-field>
+                                                            </v-col>
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="3"
+                                                            >
+                                                                <v-text-field
+                                                                        hide-details="auto"
+                                                                        label="体重(kg)"
+                                                                        loader-height="1"
+                                                                        outlined
+                                                                        persistent-hint
+                                                                        clearable
+                                                                ></v-text-field>
+                                                            </v-col>
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="3"
+                                                            >
+                                                                <v-text-field
+                                                                        dense
+                                                                        filled
+                                                                        hide-details="auto"
+                                                                        label="特长"
+                                                                        loader-height="1"
+                                                                        clearable
+                                                                ></v-text-field>
+                                                            </v-col>
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="3"
+                                                            >
+                                                                <v-select
+                                                                        :items="health"
+                                                                        hide-details="auto"
+                                                                        label="健康状况"
+                                                                        loader-height="1"
+                                                                        outlined
+                                                                        persistent-hint
+                                                                ></v-select>
+                                                            </v-col>
+                                                        </v-row>
+                                                        <v-row>
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="3"
+                                                            >
+                                                                <v-select
+                                                                        :items="train"
+                                                                        hide-details="auto"
+                                                                        label="培养层次"
+                                                                        loader-height="1"
+                                                                        outlined
+                                                                        persistent-hint
+                                                                ></v-select>
+                                                            </v-col>
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="3"
+                                                            >
+                                                                <v-select
+                                                                        :items="religion"
+                                                                        dense
+                                                                        filled
+                                                                        hide-details="auto"
+                                                                        label="宗教信仰"
+                                                                        loader-height="1"
+                                                                ></v-select>
+                                                            </v-col>
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="3"
+                                                            >
+                                                                <v-select
+                                                                        :items="category"
+                                                                        hide-details="auto"
+                                                                        label="考生类别"
+                                                                        loader-height="1"
+                                                                        outlined
+                                                                        persistent-hint
+                                                                ></v-select>
+                                                            </v-col>
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="3"
+                                                            >
+                                                                <v-select
+                                                                        :items="entranceway"
+                                                                        dense
+                                                                        filled
+                                                                        hide-details="auto"
+                                                                        label="入学方式"
+                                                                        loader-height="1"
+                                                                ></v-select>
+                                                            </v-col>
+                                                        </v-row>
+                                                        <v-row>
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="3"
+                                                            >
+                                                                <v-select
+                                                                        :items="trainmode"
+                                                                        dense
+                                                                        filled
+                                                                        hide-details="auto"
+                                                                        label="培养方式"
+                                                                        loader-height="1"
+                                                                ></v-select>
+                                                            </v-col>
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="3"
+                                                            >
+                                                                <v-select
+                                                                        :items="census"
+                                                                        hide-details="auto"
+                                                                        label="户籍性质"
+                                                                        loader-height="1"
+                                                                        outlined
+                                                                        persistent-hint
+                                                                ></v-select>
+                                                            </v-col>
+                                                        </v-row>
+                                                        <v-row>
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="3"
+                                                            >
+                                                                <v-radio-group
+                                                                        label="是否走读生"
+                                                                        row
+                                                                        v-model="row"
+                                                                >
+                                                                    <v-radio
+                                                                            label="是"
+                                                                    >
+                                                                    </v-radio>
+                                                                    <v-radio
+                                                                            label="否"
+                                                                    >
+                                                                    </v-radio>
+                                                                </v-radio-group>
+                                                            </v-col>
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="3"
+                                                            >
+                                                                <v-radio-group
+                                                                        label="是否应届毕业生"
+                                                                        row
+                                                                        v-model="row"
+                                                                >
+                                                                    <v-radio
+                                                                            label="是"
+                                                                    >
+                                                                    </v-radio>
+                                                                    <v-radio
+                                                                            label="否"
+                                                                    >
+                                                                    </v-radio>
+                                                                </v-radio-group>
+                                                            </v-col>
+                                                            <v-col
+                                                                    cols="auto"
+                                                                    sm="3"
+                                                            >
+                                                                <v-radio-group
+                                                                        label="是否华侨"
+                                                                        row
+                                                                        v-model="row"
+                                                                >
+                                                                    <v-radio
+                                                                            label="是"
+                                                                    >
+                                                                    </v-radio>
+                                                                    <v-radio
+                                                                            label="否"
+                                                                    >
+                                                                    </v-radio>
+                                                                </v-radio-group>
+                                                            </v-col>
+                                                        </v-row>
+                                                        <v-row>
+                                                            <v-container fluid>
+                                                                <v-textarea
+                                                                        auto-grow
+                                                                        filled
+                                                                        label="备注"
+                                                                        name="input-7-1"
+                                                                        value="The Woodman set to work at once, and so sharp was his axe that the tree was soon chopped nearly through."
+                                                                ></v-textarea>
+                                                            </v-container>
+                                                        </v-row>
+                                                    </v-form>
+                                                </div>
+                                            </v-expansion-panel-content>
+                                        </v-expansion-panel>
+                                    </v-expansion-panels>
+                                </v-row>
+                            </v-container>
+                        </div>
+                    </v-tab-item>
+                    <v-tab-item>
+                        <v-tabs vertical>
+                            <v-tab class="subtitle-1 tab-text-left">
+                                <v-icon left>
+                                    mdi-upload
+                                </v-icon>
+                                上传四六级
+                            </v-tab>
+                            <v-tab class="subtitle-1 tab-text-left">
+                                <v-icon left>
+                                    mdi-upload
+                                </v-icon>
+                                上传其他材料
+                            </v-tab>
+                            <v-tab-item>
+                                <v-card flat>
+                                    <v-card-text>
+                                        <div class="text-center d-flex align-left">
+                                            <v-tooltip right>
+                                                <template v-slot:activator="{ on, attrs }">
+                                                    <v-btn
+                                                            color="grey"
+                                                            dark
+                                                            v-bind="attrs"
+                                                            v-on="on"
+                                                    >
+                                                        Tips
+                                                    </v-btn>
+                                                </template>
+                                                <span>点击输入框上传</span>
+                                            </v-tooltip>
+                                        </div>
+                                        <v-file-input
+                                                chips
+                                                label="File input w/ chips"
+                                                multiple
+                                        ></v-file-input>
+                                    </v-card-text>
+                                </v-card>
+                            </v-tab-item>
+                            <v-tab-item>
+                                <v-card flat>
+                                    <v-card-text>
+                                        <div class="text-center d-flex align-left">
+                                            <v-tooltip right>
+                                                <template v-slot:activator="{ on, attrs }">
+                                                    <v-btn
+                                                            color="grey"
+                                                            dark
+                                                            v-bind="attrs"
+                                                            v-on="on"
+                                                    >
+                                                        Tips
+                                                    </v-btn>
+                                                </template>
+                                                <span>点击输入框上传</span>
+                                            </v-tooltip>
+                                        </div>
+                                        <v-file-input
+                                                chips
+                                                label="File input w/ chips"
+                                                multiple
+                                        ></v-file-input>
+                                    </v-card-text>
+                                </v-card>
+                            </v-tab-item>
+                        </v-tabs>
+                    </v-tab-item>
+                    <v-tab-item>
+                    </v-tab-item>
+                    <v-tab-item>
+                        <template>
+                            <v-container fluid>
+                                <v-textarea
+                                        auto-grow
+                                        filled
+                                        label="留言框1"
+                                        name="input-7-1"
+                                        value="The Woodman set to work at once, and so sharp was his axe that the tree was soon chopped nearly through."
+                                ></v-textarea>
+                            </v-container>
+                        </template>
+                        <template>
+                            <v-container fluid>
+                                <v-textarea
+                                        auto-grow
+                                        filled
+                                        label="留言框2"
+                                        name="input-7-1"
+                                        value="The Woodman set to work at once, and so sharp was his axe that the tree was soon chopped nearly through."
+                                ></v-textarea>
+                            </v-container>
+                        </template>
+                    </v-tab-item>
+                    <v-tab-item>
+                        <v-tabs
+                                active-class="white primary--text"
+                                background-color="primary"
+                                dark
+                                flat
+                                grow
+                        >
+                            <v-tab class="text-body-3">违纪处分</v-tab>
+                            <v-tab class="text-body-3">党团建设</v-tab>
+                            <v-tab class="text-body-3">公寓管理</v-tab>
+                            <v-tab class="text-body-3">日常事务</v-tab>
+                            <v-tab class="text-body-3">问卷调查</v-tab>
+                        </v-tabs>
+                    </v-tab-item>
+                    <v-tab-item>
+                        <v-tabs
+                                active-class="white primary--text"
+                                background-color="primary"
+                                dark
+                                flat
+                                grow
+                        >
+                            <v-tab class="text-body-3">学生资助</v-tab>
+                            <v-tab class="text-body-3">评奖评优</v-tab>
+                            <v-tab class="text-body-3">勤工助学</v-tab>
+                        </v-tabs>
+                    </v-tab-item>
+                </v-tabs>
+            </v-card>
+        </template>
+    </v-app>
+</div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        vuetify: new Vuetify(),
+        data() {
+            return {
+                messages: [
+                    {
+                        avatar: 'images/avatar/student.jpg',
+                        name: 'SpongeBob SquarePants',
+                        title: 'Welcome to AAU!',
+                        excerpt: '基本信息',
+                    },
+                    {
+                        color: 'red',
+                        icon: 'mdi-phone',
+                        name: 'Tel',
+                        new: 1,
+                        total: 3,
+                        title: '...QQ & E-mail',
+                        excerpt: '联系方式',
+                    },
+                    {
+                        color: 'primary',
+                        icon: 'mdi-account-group-outline',
+                        name: 'Family',
+                        new: 2,
+                        total: 4,
+                        title: 'to be continued',
+                        excerpt: '家庭成员信息',
+                    },
+                    {
+                        color: 'yellow',
+                        icon: 'mdi-school-outline',
+                        name: 'Education',
+                        new: 2,
+                        total: 4,
+                        title: 'to be continued',
+                        excerpt: '教育经历',
+                    },
+                    {
+                        color: 'teal',
+                        icon: 'mdi-dots-horizontal-circle-outline',
+                        name: 'More',
+                        new: 2,
+                        total: 4,
+                        title: 'to be continued',
+                        excerpt: '其他信息',
+                    },
+
+                ],
+                lorem: 'Lorem ipsum dolor sit amet, at aliquam vivendum vel, everti delicatissimi cu eos. Dico iuvaret debitis mel an, et cum zril menandri. Eum in consul legimus accusam. Ea dico abhorreant duo, quo illum minimum incorrupte no, nostro voluptaria sea eu. Suas eligendi ius at, at nemore equidem est. Sed in error hendrerit, in consul constituam cum.',
+                sexuality: [
+                    '男',
+                    '女',
+                ],
+                grade: [
+                    '2020',
+                    '2019',
+                    '2018',
+                    '2017'
+                ],
+                politics: [
+                    '中国共产党正式党员',
+                    '中国共产党预备党员',
+                    '中国共产主义青年团团员',
+                    '群众',
+                    '其他',
+                ],
+                nation: [
+                    '汉族',
+                    '其他',
+                    '未确定',
+                ],
+                schoolroll: '在读',
+                location: [
+                    '北京',
+                    '安徽',
+                    '天津',
+                    '上海',
+                    '重庆',
+                    '银川',
+                    '石嘴山',
+                    '吴忠',
+                    '固原',
+                    '中卫',
+                    'Just a demo',
+                ],
+                maritalstatus: [
+                    '是',
+                    '否'
+                ],
+                religion: [
+                    '无宗教信仰',
+                    '佛教',
+                    '喇嘛教',
+                    '道教',
+                    '天主教',
+                    '基督教',
+                    '东正教',
+                    '伊斯兰教',
+                    '其他',
+                ],
+                health: [
+                    '健康或良好',
+                    '一般或较弱',
+                    '有疾病',
+                    '有生理缺陷',
+                    '残疾',
+                ],
+                train: [
+                    '本科生',
+                    '专科生',
+                ],
+                category: [
+                    '统一招生考试',
+                    '恢复入学资格',
+                ],
+                entranceway: [
+                    '统招',
+                    '恢复入学资格',
+                ],
+                trainmode: [
+                    '定向',
+                    '非定向',
+                ],
+                census: [
+                    '农村',
+                    '城市',
+                    '县镇非农村',
+                ],
+                menu: false,
+                emailRules: [
+                    v => !!v || '邮箱空!',
+                    v => /.+@.+/.test(v) || '邮箱必须有效',
+                ],
+            }
+        },
+        watch: {
+            menu(val) {
+                console.warn(val)
+                val && setTimeout(() => (this.$refs.picker.activePicker = 'YEAR'))
+            },
+        },
+        methods: {
+            save(date) {
+                this.$refs.menu.save(date)
+            },
+        },
+    })
+</script>
+</html>

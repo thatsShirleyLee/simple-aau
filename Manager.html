@@ -1,0 +1,345 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>AAU_Manager</title>
+	<meta content="width=device-width,initial-scale=1" name="viewport">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+	<link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
+	<link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui" name="viewport">
+	<style type="text/css">
+		/*.text-distributed{*/
+		/*	text-align-last: justify;*/
+		/*	text-align: left;*/
+		/*}*/
+		.tab-text-left{
+			justify-content: left;
+		}
+	</style>
+</head>
+<body>
+<div id="app">
+	<v-app>
+		<v-card>
+			<v-toolbar
+					color="primary"
+					dark
+					flat
+			>
+				<v-toolbar-title>Manager</v-toolbar-title>
+				<v-spacer></v-spacer>
+				<div>
+					<v-menu
+							offset-y
+					>
+						<template v-slot:activator="{ on, attrs }">
+							<v-btn
+									icon
+									v-bind="attrs"
+									v-on="on"
+							>
+								<v-icon>mdi-bell-ring-outline</v-icon>
+							</v-btn>
+						</template>
+
+						<v-list
+								width="140"
+								style="border-radius: 6px"
+						>
+							<v-list-item
+									@click="() => {}"
+									style="min-height: 35px"
+							>
+								<v-list-item-title style="font-size: 0.5em;">
+									<v-icon left>
+										mdi-bell-plus-outline
+									</v-icon>
+									查看消息</v-list-item-title>
+							</v-list-item>
+							<v-list-item
+									@click="() => {}"
+									style="min-height: 35px"
+							>
+								<v-list-item-title style="font-size: 0.5em;">
+									<v-icon left>
+										mdi-bell-check-outline
+									</v-icon>
+									标记已读</v-list-item-title>
+							</v-list-item>
+						</v-list>
+					</v-menu>
+					<v-menu
+							offset-y
+					>
+						<template v-slot:activator="{ on, attrs }">
+							<v-btn
+									icon
+									v-bind="attrs"
+									v-on="on"
+							>
+<!--								<v-icon>mdi-account-check-outline</v-icon>-->
+								<v-avatar>
+									<img
+											alt="John"
+											src="images/avatar/student.jpg"
+											style="height: 30px; width: 30px;"
+									>
+								</v-avatar>
+							</v-btn>
+						</template>
+
+						<v-list
+								width="140"
+								style="border-radius: 6px"
+						>
+							<v-list-item
+									@click="() => {}"
+									style="min-height: 35px"
+							>
+								<v-list-item-title style="font-size: 0.5em;">
+									<v-icon left>
+										mdi-account-edit-outline
+									</v-icon>
+									修改信息</v-list-item-title>
+							</v-list-item>
+							<v-list-item
+									@click="logout"
+									style="min-height: 35px"
+							>
+								<v-list-item-title style="font-size: 0.5em;">
+									<v-icon left>
+										mdi-logout
+									</v-icon>
+									退出</v-list-item-title>
+							</v-list-item>
+						</v-list>
+					</v-menu>
+					<v-menu
+							offset-y
+					>
+						<template v-slot:activator="{ on, attrs }">
+							<v-btn
+									icon
+									v-bind="attrs"
+									v-on="on"
+							>
+								<v-icon>mdi-dots-vertical</v-icon>
+							</v-btn>
+						</template>
+
+						<v-list
+								width="140"
+								style="border-radius: 6px"
+						>
+							<v-list-item
+									v-for="n in 5"
+									:key="n"
+									@click="() => {}"
+									style="min-height: 35px"
+							>
+								<v-list-item-title style="text-align: center; font-size: 0.5em;">Option {{ n }}</v-list-item-title>
+							</v-list-item>
+						</v-list>
+					</v-menu>
+				</div>
+			</v-toolbar>
+			<v-tabs
+					background-color="primary"
+					active-class="white primary--text"
+					dark
+					flat
+					grow
+			>
+				<!--                        class="mt-7"-->
+				<!--                    grow 强制 v-tab 占用所有可用空间-->
+				<v-tab class="text-body-1">成绩导入</v-tab>
+				<v-tab class="text-body-1">成绩认定</v-tab>
+				<v-tab class="text-body-1">回复</v-tab>
+				<v-tab-item>
+					<v-tabs vertical>
+						<v-tab class="subtitle-1 tab-text-left">
+							<v-icon left>
+								mdi-upload
+							</v-icon>
+							四六级成绩
+						</v-tab>
+						<v-tab class="subtitle-1 tab-text-left">
+							<v-icon left>
+								mdi-upload
+							</v-icon>
+							综合素质减分
+						</v-tab>
+						<v-tab-item>
+							<v-card flat>
+								<v-card-text>
+									<div class="text-center d-flex align-left">
+										<v-tooltip right>
+											<template v-slot:activator="{ on, attrs }">
+												<v-btn
+														color="grey"
+														dark
+														v-bind="attrs"
+														v-on="on"
+												>
+													Tips
+												</v-btn>
+											</template>
+											<span>点击输入框上传</span>
+										</v-tooltip>
+									</div>
+									<v-file-input
+											chips
+											label="File input w/ chips"
+											multiple
+									></v-file-input>
+								</v-card-text>
+							</v-card>
+						</v-tab-item>
+						<v-tab-item>
+							<v-card flat>
+								<v-card-text>
+									<div class="text-center d-flex align-left">
+										<v-tooltip right>
+											<template v-slot:activator="{ on, attrs }">
+												<v-btn
+														color="grey"
+														dark
+														v-bind="attrs"
+														v-on="on"
+												>
+													Tips
+												</v-btn>
+											</template>
+											<span>点击输入框上传</span>
+										</v-tooltip>
+									</div>
+									<v-file-input
+											chips
+											label="File input w/ chips"
+											multiple
+									></v-file-input>
+								</v-card-text>
+							</v-card>
+						</v-tab-item>
+					</v-tabs>
+				</v-tab-item>
+				<v-tab-item>
+					<v-card flat>
+						<template>
+							<v-data-table
+									v-model="selected"
+									:headers="headers"
+									:items="sno"
+									:single-select="singleSelect"
+									item-key="sno"
+									show-select
+									class="elevation-1"
+							>
+								<template v-slot:top>
+									<v-switch
+											v-model="singleSelect"
+											label="单选模式"
+											class="pa-3"
+									></v-switch>
+								</template>
+							</v-data-table>
+						</template>
+						<div class="text-center">
+							<v-btn
+									class="ml-7 my-5 title"
+									color="primary"
+									dark
+									rounded
+									depressed
+									large
+							>
+								认定
+							</v-btn>
+						</div>
+					</v-card>
+				</v-tab-item>
+				<v-tab-item>
+					这里是回复
+				</v-tab-item>
+			</v-tabs>
+		</v-card>
+	</v-app>
+</div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+<script>
+	new Vue({
+		el: '#app',
+		vuetify: new Vuetify(),
+		data () {
+			return {
+				singleSelect: false,
+				selected: [],
+				headers: [
+					{
+						text: '学号',
+						align: 'start',
+						sortable: true,
+						value: 'sno',
+					},
+					{text: '姓名', value: 'sname'},
+					{text: '基本素质', value: 'jbsz'},
+					{text: '学习成绩', value: 'xxcj'},
+					{text: '素质拓展', value: 'sztz'},
+					{text: '创新创业', value: 'cxcy'},
+					{text: '附件', value: 'fj'},
+				],
+				sno: [
+					{
+						sno: 10000001,
+						sname: '海绵宝宝',
+						jbsz: 3.7,
+						xxcj: 67,
+						sztz: 4.3,
+						cxcy: '8%',
+						fj: '',
+					},
+					{
+						sno: 10000002,
+						sname: '派大星',
+						jbsz: 16.0,
+						xxcj: 49,
+						sztz: 3.9,
+						cxcy: '16%',
+						fj: '',
+					},
+					{
+						sno: 10000003,
+						sname: '章鱼哥',
+						jbsz: 0.0,
+						xxcj: 94,
+						sztz: 0.0,
+						cxcy: '0%',
+						fj: '',
+					},
+					{
+						sno: 10000004,
+						sname: '痞老板',
+						jbsz: 3.2,
+						xxcj: 87,
+						sztz: 6.5,
+						cxcy: '45%',
+						fj: '',
+					},
+					{
+						sno: 10000005,
+						sname: '蟹阿金',
+						jbsz: 25.0,
+						xxcj: 51,
+						sztz: 4.9,
+						cxcy: '22%',
+						fj: '',
+					},
+				],
+			}
+		},
+	})
+</script>
+</html>
